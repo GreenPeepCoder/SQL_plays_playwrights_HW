@@ -91,6 +91,17 @@ class Playwright
   end
 
   def self.find_by_name(name)
+    person = PlayDBConnection.instance.execute(<<-SQL, name)
+      SELECT
+        *
+      FROM
+        playwrights
+      WHERE
+        name = ?
+    SQL
+    return nil unless person.length > 0 # person is stored in an array
+
+    Playwright.new(person.first)
   end
 
   def initialize
