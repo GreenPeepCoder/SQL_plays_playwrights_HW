@@ -19,6 +19,23 @@ class Play
     data.map { |datum| Play.new(datum) }
   end
 
+  def self.find_by_title(title)
+    play = PlayDBConnection.instance.execute(<<-SQL, title)
+      SELECT
+        *
+      FROM
+        plays
+      WHERE
+        title = ?
+    SQL
+    return nil unless play.length > 0
+
+    Play.new(play.first) # play is sorted in an array
+  end
+
+  def self.find_by_playwright(name)
+  end
+
   def initialize(options)
     @id = options['id']
     @title = options['title']
@@ -49,11 +66,7 @@ class Play
     SQL
   end
 
-  def find_by_title(title)
-  end
-
-  def find_by_playwright(name)
-  end
+  
 end
 
 class Playwright
